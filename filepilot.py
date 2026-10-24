@@ -123,8 +123,10 @@ def backup_folder(source, destination):
     if not src.is_dir():
         say("Source folder is unavailable.", "bold red")
         return
-    if dst == src or src in dst.parents:
-        say("Unsafe destination: choose a folder outside the source.", "bold red")
+    # Reject source itself, destinations inside source, and its ancestors.
+    # The ancestor check prevents copying a directory onto itself.
+    if dst == src or src in dst.parents or dst in src.parents:
+        say("Unsafe destination: choose a separate folder outside the source tree.", "bold red")
         return
     if dst.exists() and not dst.is_dir():
         say("Destination exists and is not a directory.", "bold red")
